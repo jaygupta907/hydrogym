@@ -24,7 +24,7 @@ hgym.print(f"Total dof: {dof} --- dof/rank: {int(dof/fd.COMM_WORLD.size)}")
 
 solver = hgym.NewtonSolver(
     flow,
-    stabilization="gls",
+    stabilization='none',
     solver_parameters=solver_parameters,
 )
 

@@ -62,7 +62,7 @@ theta = 4.0  # Phase angle
 kp = k * np.cos(theta)
 kd = k * np.sin(theta)
 
-tf = 100.0
+tf = 10.0
 dt = 0.01
 n_steps = int(tf // dt) + 2
 

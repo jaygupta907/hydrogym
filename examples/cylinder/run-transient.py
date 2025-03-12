@@ -24,7 +24,7 @@ flow = hgym.RotaryCylinder(
 )
 
 # Time step
-tf = 300.0
+tf = 50.0
 dt = 0.01
 
 
@@ -44,7 +44,7 @@ log = hgym.utils.io.LogCallback(
     filename=None,
 )
 
-interval = int(100 / dt)
+interval = 100
 callbacks = [
     log,
     hgym.utils.io.CheckpointCallback(interval=interval, filename=checkpoint),

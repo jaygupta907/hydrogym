@@ -24,9 +24,9 @@ flow.qB.assign(flow.q)
 dof = flow.mixed_space.dim()
 hgym.print(f"Total dof: {dof} --- dof/rank: {int(dof/fd.COMM_WORLD.size)}")
 
-tf = 1000.0
+tf = 10.0
 method = "BDF"
-stabilization = "gls"
+stabilization = "none"
 dt = 0.01
 
 
@@ -44,7 +44,7 @@ print_fmt = (
 interval = max(1, int(1e-1 / dt))
 callbacks = [
     # hgym.io.ParaviewCallback(interval=100, filename=pvd_out, postprocess=compute_vort),
-    hgym.io.CheckpointCallback(interval=1000, filename=checkpoint),
+    hgym.io.CheckpointCallback(interval=100, filename=checkpoint),
     hgym.io.LogCallback(
         postprocess=log_postprocess,
         nvals=4,

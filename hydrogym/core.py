@@ -1,7 +1,8 @@
 import abc
 from typing import Any, Callable, Iterable, Tuple, TypeVar, Union
 
-import gym
+import gymnasium.spaces
+import gym.spaces
 import numpy as np
 from numpy.typing import ArrayLike
 
@@ -320,7 +321,7 @@ class TransientSolver:
     pass
 
 
-class FlowEnv(gym.Env):
+class FlowEnv(gymnasium.Env):
 
   def __init__(self, env_config: dict):
     self.flow: PDEBase = env_config.get("flow")(
@@ -332,18 +333,19 @@ class FlowEnv(gym.Env):
     self.iter: int = 0
     self.q0: self.flow.StateType = self.flow.copy_state()
 
-    self.observation_space = gym.spaces.Box(
+    self.observation_space = gymnasium.spaces.Box(
         low=-np.inf,
         high=np.inf,
         shape=(self.flow.num_outputs,),
-        dtype=float,
+        dtype=np.float32,
     )
-    self.action_space = gym.spaces.Box(
+    self.action_space = gymnasium.spaces.Box(
         low=-self.flow.MAX_CONTROL,
         high=self.flow.MAX_CONTROL,
         shape=(self.flow.num_inputs,),
-        dtype=float,
+        dtype=np.float32,
     )
+    print(self.observation_space)
 
   def set_callbacks(self, callbacks: Iterable[CallbackBase]):
     self.callbacks = callbacks
@@ -373,7 +375,7 @@ class FlowEnv(gym.Env):
 
     obs = self.stack_observations(obs)
 
-    return obs, reward, done, info
+    return obs, reward, done,False,info
 
   # TODO: Use this to allow for arbitrary returns from collect_observations
   #  That are then converted to a list/tuple/ndarray here
@@ -386,12 +388,12 @@ class FlowEnv(gym.Env):
   def check_complete(self):
     return self.iter > self.max_steps
 
-  def reset(self, t=0.0) -> Union[ArrayLike, Tuple[ArrayLike, dict]]:
+  def reset(self, t=0.0,seed=None,options=None) -> Union[ArrayLike, Tuple[ArrayLike, dict]]:
     self.iter = 0
     self.flow.reset(q0=self.q0, t=t)
     self.solver.reset()
 
-    return self.flow.get_observations()
+    return self.flow.get_observations(),{}
 
   def render(self, mode="human", **kwargs):
     self.flow.render(mode=mode, **kwargs)

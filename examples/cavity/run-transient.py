@@ -8,6 +8,7 @@ output_dir = "output"
 pvd_out = None
 Re = 7500
 restart = f"{output_dir}/{Re}_steady.h5"
+checkpoint = f"{output_dir}/checkpoint.h5"
 
 flow = hgym.Cavity(Re=Re, restart=restart)
 
@@ -32,7 +33,7 @@ print_fmt = (
 )
 callbacks = [
     # hgym.io.ParaviewCallback(interval=100, filename=pvd_out, postprocess=compute_vort),
-    # hgym.io.CheckpointCallback(interval=1000, filename=checkpoint),
+    hgym.io.CheckpointCallback(interval=100, filename=checkpoint),
     hgym.io.LogCallback(
         postprocess=log_postprocess,
         nvals=4,
@@ -43,9 +44,9 @@ callbacks = [
 ]
 
 # End time of the simulation
-Tf = 1.0
+Tf = 10.0
 method = "BDF"  # Time-stepping method
-stabilization = "gls"  # Stabilization method
+stabilization = "none"  # Stabilization method
 dt = 1e-2
 
 hgym.print("Beginning integration")

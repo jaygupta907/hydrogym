@@ -3,15 +3,16 @@ import psutil
 
 import hydrogym.firedrake as hgym
 
-output_dir = "."
+output_dir = "output"
 pvd_out = None
 restart = None
-checkpoint = "checkpoint.h5"
+mesh_resolution = 'fine'
+checkpoint = f"{output_dir}/checkpoint_{mesh_resolution}.h5"
 
 flow = hgym.Pinball(
-    Re=30,
+    Re=100,
     restart=restart,
-    mesh="fine",
+    mesh=mesh_resolution,
 )
 
 
@@ -32,10 +33,7 @@ log = hgym.utils.io.LogCallback(
     filename="coeffs.dat",
 )
 
-# callbacks = [log, hgym.utils.io.CheckpointCallback(interval=100, filename=checkpoint)]
-callbacks = [
-    log,
-]
+callbacks = [log, hgym.utils.io.CheckpointCallback(interval=100, filename=checkpoint)]
 
 
 def controller(t, obs):
@@ -43,10 +41,10 @@ def controller(t, obs):
 
 
 # Simulation config
-Tf = 1.0
+Tf = 10.0
 method = "BDF"
-stabilization = "gls"
-dt = 0.1
+stabilization = "none"
+dt = 0.01
 
 hgym.print("Beginning integration")
 hgym.integrate(
@@ -56,5 +54,4 @@ hgym.integrate(
     callbacks=callbacks,
     method=method,
     stabilization=stabilization,
-    # controller=controller,
 )
